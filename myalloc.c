@@ -41,6 +41,28 @@ void print_data(void)
     printf("\n");
 }
 
+// example runs from project document
+int main(void)
+{
+  void *p;
+    print_data();
+    p = myalloc(16);
+    print_data();
+    p = myalloc(16);
+    printf("%p\n", p);
+    // should return:
+    // [empty]
+    // [1008, used]
+
+    // print_data();
+    // p = myalloc(64);
+    // print_data();
+    // should return:
+    // [empty]
+    // [1008, used]
+    // 0x0
+}
+
 // logic:
 // > at the same time, we will make a linked list node inside
 // > this new space indicating its siez and "in use" status.
