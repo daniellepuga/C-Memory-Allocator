@@ -12,22 +12,13 @@ struct block * head = NULL;  // Head of the list, empty
 int main(void)
 {
   void *p;
-    // print_data();
-    // p = myalloc(16);
-    // print_data();
-    // p = myalloc(16);
-    // printf("%p\n", p);
-    // should return:
-    // [empty]
-    // [1008, used]
-
     print_data();
     p = myalloc(32);
     print_data();
     // should return:
     // [empty]
-    // [1008, used]
-    // 0x0
+    // [32, used] -> [960, free]
+    // since we have splitting
 }
 
 void *myalloc(int bytes)
@@ -50,6 +41,8 @@ void *myalloc(int bytes)
     // at the head.
     block * next = PTR_OFFSET(head, TOTAL_PAD);
     allocate_memory(&head, &next, bytes);
+    // use the provided macro to return # of bytes equal to size of block 
+    // ahead of head node
     return PTR_OFFSET(head, PAD_BLOCK_SIZE);
   }
   }
@@ -62,12 +55,13 @@ void *myalloc(int bytes)
     {
       if(!cur->in_use && (PADDED_SIZE(bytes) + PAD_BLOCK_SIZE) <= cur->size)
       {
-        // if the block is found:
-        // > mark it in use
-        // > return a pointer to the user data just after the linked
+        // if the block is found, mark it in use and
+        // return a pointer to the user data just after the linked
         // list node (plus some padding).
         block * next = PTR_OFFSET(cur, TOTAL_PAD);
-        allocate_memory(&cur, &next, bytes);
+        allocate_memory(&cur, &next, bytes); 
+        // use the provided macro to return # of bytes equal to size of block 
+        // ahead of current node
         return PTR_OFFSET(cur, PAD_BLOCK_SIZE);
       }
       else
@@ -76,18 +70,17 @@ void *myalloc(int bytes)
       }
     }
   }
-  // if NO space found:
+  // if NO space is found:
   return NULL;
 }
-
 
 // https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
 // used for help coming up with structure for a helper function to 
 // handle memory allocation
-void allocate_memory(block ** current, block ** next, int bytes) {
+void allocate_memory(block ** current, block ** next, int bytes) 
+{
     block * cur = *current;
     block * nxt = *next;
-
     // we create a new node and expect that the next one is not in use
     nxt->in_use = false;
     // we make the next node's size equal to current's size minus
@@ -103,7 +96,7 @@ void allocate_memory(block ** current, block ** next, int bytes) {
     cur->size = PADDED_SIZE(bytes);
 }
 
-// below from project document
+// below function from project document
 void print_data(void)
 {
     struct block *b = head;

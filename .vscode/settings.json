@@ -27,6 +27,7 @@
     "**/.vscode/**"
   ],
   "files.associations": {
-    "myalloc.h": "c"
+    "myalloc.h": "c",
+    "unistd.h": "c"
   }
 }
