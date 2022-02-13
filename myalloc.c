@@ -80,13 +80,18 @@ void *myalloc(int bytes)
   return NULL;
 }
 
+
+// https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
+// used for help coming up with structure for a helper function to 
+// handle memory allocation
 void allocate_memory(block ** current, block ** next, int bytes) {
     block * cur = *current;
     block * nxt = *next;
 
+    // we create a new node and expect that the next one is not in use
     nxt->in_use = false;
     // we make the next node's size equal to current's size minus
-    // the padding
+    // the total padding
     nxt->size = cur->size - (TOTAL_PAD);
     // next should have no next value yet
     nxt->next = NULL;
@@ -96,7 +101,6 @@ void allocate_memory(block ** current, block ** next, int bytes) {
     cur->in_use = true;
     // we update the current node's size to be equal to the padding
     cur->size = PADDED_SIZE(bytes);
-    // we create a new node and expect that the next one is not in use
 }
 
 // below from project document

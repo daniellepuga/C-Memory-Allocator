@@ -13,6 +13,10 @@
 #define PAD_BLOCK_SIZE ( (int) PADDED_SIZE(sizeof(block)) )
 #define TOTAL_PAD (PAD_BLOCK_SIZE + PADDED_SIZE(bytes))
 
+// https://www.tutorialspoint.com/cprogramming/c_typedef.htm
+// we use typedef here to define this structure as a new data
+// type and then use that to define structure variables in
+// myalloc.c
 typedef struct block {
     struct block *next;
     int size;   // Bytes
