@@ -6,7 +6,8 @@
 // NO using builtin malloc.
 // intentionally incomplete for now
 
-struct block * head = NULL;  // Head of the list, empty
+// head of the list, empty
+struct block * head = NULL;  
 
 // example runs from project document
 int main(void)
@@ -26,8 +27,8 @@ void *myalloc(int bytes)
   if (head == NULL)
   {
     // if this is the first call, sbrk() to get space (1024)
-    // > at the same time, we will make a linked list node inside
-    // > this new space indicating its size and "in use" status.
+    // at the same time, we will make a linked list node inside
+    // this new space indicating its size and "in use" status.
     head = sbrk(1024);
     head->size = 1024 - PADDED_SIZE(sizeof(struct block));
     head->in_use = 0;
@@ -40,7 +41,7 @@ void *myalloc(int bytes)
     // have memory equal to the size of the block plus a buffer
     // at the head.
     block * next = PTR_OFFSET(head, TOTAL_PAD);
-    allocate_memory(&head, &next, bytes);
+    allocate_mem(&head, &next, bytes);
     // use the provided macro to return # of bytes equal to size of block 
     // ahead of head node
     return PTR_OFFSET(head, PAD_BLOCK_SIZE);
@@ -58,8 +59,9 @@ void *myalloc(int bytes)
         // if the block is found, mark it in use and
         // return a pointer to the user data just after the linked
         // list node (plus some padding).
+        // this is what we use the allocate_mem function for
         block * next = PTR_OFFSET(cur, TOTAL_PAD);
-        allocate_memory(&cur, &next, bytes); 
+        allocate_mem(&cur, &next, bytes); 
         // use the provided macro to return # of bytes equal to size of block 
         // ahead of current node
         return PTR_OFFSET(cur, PAD_BLOCK_SIZE);
@@ -77,7 +79,7 @@ void *myalloc(int bytes)
 // https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
 // used for help coming up with structure for a helper function to 
 // handle memory allocation
-void allocate_memory(block ** current, block ** next, int bytes) 
+void allocate_mem(block ** current, block ** next, int bytes) 
 {
     block * cur = *current;
     block * nxt = *next;
@@ -100,7 +102,6 @@ void allocate_memory(block ** current, block ** next, int bytes)
 void print_data(void)
 {
     struct block *b = head;
-
     if (b == NULL) {
         printf("[empty]\n");
         return;

@@ -25,4 +25,4 @@ typedef struct block {
 
 void * myalloc(int);
 void print_data(void);
-void allocate_memory(block **, block **, int);
+void allocate_mem(block **, block **, int);
