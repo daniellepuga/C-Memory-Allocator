@@ -1,11 +1,5 @@
 #include "myalloc.h"
 
-// the goal is to make a myalloc() function
-// will allocate certain # of bytes and return a
-// pointer to it.
-// NO using builtin malloc.
-// intentionally incomplete for now
-
 // head of the list, empty
 struct block * head = NULL;  
 
@@ -16,11 +10,14 @@ int main(void)
     print_data();
     p = myalloc(32);
     print_data();
-    // should return:
     // [empty]
     // [32, used] -> [960, free]
     // since we have splitting
 }
+
+// add a myfree() function to mark blocks as unused.
+// this function will receive only pointers they got
+// from myalloc().
 
 void *myalloc(int bytes)
 {
@@ -41,7 +38,7 @@ void *myalloc(int bytes)
     // have memory equal to the size of the block plus a buffer
     // at the head.
     block * next = PTR_OFFSET(head, TOTAL_PAD);
-    allocate_mem(&head, &next, bytes);
+    split_space(&head, &next, bytes);
     // use the provided macro to return # of bytes equal to size of block 
     // ahead of head node
     return PTR_OFFSET(head, PAD_BLOCK_SIZE);
@@ -59,9 +56,8 @@ void *myalloc(int bytes)
         // if the block is found, mark it in use and
         // return a pointer to the user data just after the linked
         // list node (plus some padding).
-        // this is what we use the allocate_mem function for
         block * next = PTR_OFFSET(cur, TOTAL_PAD);
-        allocate_mem(&cur, &next, bytes); 
+        split_space(&cur, &next, bytes); 
         // use the provided macro to return # of bytes equal to size of block 
         // ahead of current node
         return PTR_OFFSET(cur, PAD_BLOCK_SIZE);
@@ -78,9 +74,12 @@ void *myalloc(int bytes)
 
 // https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
 // used for help coming up with structure for a helper function to 
-// handle memory allocation
-void allocate_mem(block ** current, block ** next, int bytes) 
+// handle memory allocation and splitting.
+void split_space(block ** current, block ** next, int bytes) 
 {
+    // add conditional here for if the node big enough to split
+    // writing a new struct block with remainining unused space
+    // and wiring it to the linked list.
     block * cur = *current;
     block * nxt = *next;
     // we create a new node and expect that the next one is not in use
