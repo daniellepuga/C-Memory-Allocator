@@ -18,11 +18,12 @@ int main(void)
 // https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
 void split_space(block ** current, block ** next, int bytes) 
 {
-    // add conditional here for if the node not big enough to split
+    // add conditional here for if enough room for this allocation 
+    // but NOT enough room for a new split block
     block * cur = *current;
 
     block * nxt = *next;
-    
+
     // we create a new node and expect that the next one is not in use
     nxt->in_use = false;
     // we make the next node's size equal to current's size minus
