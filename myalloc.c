@@ -15,6 +15,29 @@ int main(void)
     // since we have splitting
 }
 
+// https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
+void split_space(block ** current, block ** next, int bytes) 
+{
+    // add conditional here for if the node not big enough to split
+    block * cur = *current;
+
+    block * nxt = *next;
+    
+    // we create a new node and expect that the next one is not in use
+    nxt->in_use = false;
+    // we make the next node's size equal to current's size minus
+    // the total padding
+    nxt->size = cur->size - (TOTAL_PAD);
+    // next should have no next value yet
+    nxt->next = NULL;
+    // we set the current node's next equal to next node
+    cur->next = nxt;
+    // we know that our current node is in use
+    cur->in_use = true;
+    // we update the current node's size to be equal to the padding
+    cur->size = PADDED_SIZE(bytes);
+}
+
 // add a myfree() function to mark blocks as unused.
 // this function will receive only pointers they got
 // from myalloc().
@@ -48,7 +71,7 @@ void *myalloc(int bytes)
   {
     // walk the linked list in a look and look for the first
     // node that is not in use and big enough to hold amt+ some
-    block * cur = head->next;
+    block * cur = head;
     while (cur)
     {
       if(!cur->in_use && (PADDED_SIZE(bytes) + PAD_BLOCK_SIZE) <= cur->size)
@@ -70,31 +93,6 @@ void *myalloc(int bytes)
   }
   // if NO space is found:
   return NULL;
-}
-
-// https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
-// used for help coming up with structure for a helper function to 
-// handle memory allocation and splitting.
-void split_space(block ** current, block ** next, int bytes) 
-{
-    // add conditional here for if the node big enough to split
-    // writing a new struct block with remainining unused space
-    // and wiring it to the linked list.
-    block * cur = *current;
-    block * nxt = *next;
-    // we create a new node and expect that the next one is not in use
-    nxt->in_use = false;
-    // we make the next node's size equal to current's size minus
-    // the total padding
-    nxt->size = cur->size - (TOTAL_PAD);
-    // next should have no next value yet
-    nxt->next = NULL;
-    // we set the current node's next equal to next node
-    cur->next = nxt;
-    // we know that our current node is in use
-    cur->in_use = true;
-    // we update the current node's size to be equal to the padding
-    cur->size = PADDED_SIZE(bytes);
 }
 
 // below function from project document
