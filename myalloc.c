@@ -8,12 +8,11 @@ int main(void)
 {
    void *p;
 
-    myalloc(10);     print_data();
-    p = myalloc(20); print_data();
-    myalloc(30);     print_data();
-    myfree(p);       print_data();
-    myalloc(40);     print_data();
-    myalloc(10);     print_data();
+    p = myalloc(512);
+    print_data();
+
+    myfree(p);
+    print_data();
 }
 
 // https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
@@ -23,7 +22,7 @@ void split_space(block ** current, block ** next, int bytes)
     block * cur = *current;
     block * nxt = *next;
 
-    // add conditional here for if enough room for this allocation 
+    // if enough room for this allocation 
     // but NOT enough room for a new split block
     if(cur->next) 
     {
@@ -54,10 +53,6 @@ void myfree(void *p)
   // mark block as unused
   b->in_use = false;
 }
-
-// add a myfree() function to mark blocks as unused.
-// this function will receive only pointers they got
-// from myalloc().
 
 void *myalloc(int bytes)
 {
