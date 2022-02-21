@@ -6,24 +6,31 @@ struct block * head = NULL;
 // example runs from project document
 int main(void)
 {
-  void *p;
-    print_data();
-    p = myalloc(32);
-    print_data();
-    // [empty]
-    // [32, used] -> [960, free]
-    // since we have splitting
+   void *p;
+
+    myalloc(10);     print_data();
+    p = myalloc(20); print_data();
+    myalloc(30);     print_data();
+    myfree(p);       print_data();
+    myalloc(40);     print_data();
+    myalloc(10);     print_data();
 }
 
 // https://www.geeksforgeeks.org/first-fit-algorithm-in-memory-management-using-linked-list/
 void split_space(block ** current, block ** next, int bytes) 
 {
-    // add conditional here for if enough room for this allocation 
-    // but NOT enough room for a new split block
-    block * cur = *current;
 
+    block * cur = *current;
     block * nxt = *next;
 
+    // add conditional here for if enough room for this allocation 
+    // but NOT enough room for a new split block
+    if(cur->next) 
+    {
+      cur->in_use = true;
+    }
+    else
+    {
     // we create a new node and expect that the next one is not in use
     nxt->in_use = false;
     // we make the next node's size equal to current's size minus
@@ -37,6 +44,15 @@ void split_space(block ** current, block ** next, int bytes)
     cur->in_use = true;
     // we update the current node's size to be equal to the padding
     cur->size = PADDED_SIZE(bytes);
+    }
+}
+
+void myfree(void *p)
+{
+  // 
+  struct block *b = p - (PAD_BLOCK_SIZE);
+  // mark block as unused
+  b->in_use = false;
 }
 
 // add a myfree() function to mark blocks as unused.
@@ -63,8 +79,6 @@ void *myalloc(int bytes)
     // at the head.
     block * next = PTR_OFFSET(head, TOTAL_PAD);
     split_space(&head, &next, bytes);
-    // use the provided macro to return # of bytes equal to size of block 
-    // ahead of head node
     return PTR_OFFSET(head, PAD_BLOCK_SIZE);
   }
   }
@@ -82,8 +96,6 @@ void *myalloc(int bytes)
         // list node (plus some padding).
         block * next = PTR_OFFSET(cur, TOTAL_PAD);
         split_space(&cur, &next, bytes); 
-        // use the provided macro to return # of bytes equal to size of block 
-        // ahead of current node
         return PTR_OFFSET(cur, PAD_BLOCK_SIZE);
       }
       else

@@ -26,3 +26,4 @@ typedef struct block {
 void * myalloc(int);
 void print_data(void);
 void allocate_mem(block **, block **, int);
+void myfree(void *);
