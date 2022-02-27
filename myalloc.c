@@ -90,16 +90,36 @@ void myfree(void *p)
   b->in_use = 0;
 
 // start cur at head
+  struct block *cur = head;
 
-// while cur->next isn't NULL:
-//     if cur is not in_use and next node not in use:
-//         add the next node's region's size to cur's
-//         make cur's next pointer skip the next node
-//     else
-//         move cur to next node
+    // while cur->next isn't NULL:
+	while (cur->next != NULL) { 
+        // if cur is not in_use and next node not in use:
+	    if ((cur->in_use == 0) && (cur->next->in_use == 0)) {
+            // add the next node's region's size to cur's
+		    cur->size += PADDED_SIZE(sizeof(struct block)) + (cur->next)->size;
+            // make cur's next pointer skip the next node	
+		    cur->next = cur->next->next;	
+		}
+        // else
+		else {
+            // move cur to next node
+		    cur = cur->next;	
+		}		
+	}
 }
 
+
 int main(void) {
-    myalloc(977);
-    print_data();
+void *p, *q, *r, *s;
+
+    p = myalloc(10); print_data();
+    q = myalloc(20); print_data();
+    r = myalloc(30); print_data();
+    s = myalloc(40); print_data();
+
+    myfree(q); print_data();
+    myfree(p); print_data();
+    myfree(s); print_data();
+    myfree(r); print_data();
 }
